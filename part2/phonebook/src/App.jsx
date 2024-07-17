@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification';
 import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
 
   const [nameFilter, setNameFilter] = useState('')
+
+  const [notification, setNotification] = useState()
 
   useEffect(() => {
     personService
@@ -34,6 +36,7 @@ const App = () => {
           .update(id, updateData)
           .then(returnedPerson => {
             setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+            createNotification(`Phone number changed to ${returnedPerson.number}`)
           })
         return;
       }
@@ -43,6 +46,7 @@ const App = () => {
       .create(newPerson)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
+        createNotification(`Added ${returnedPerson.name}`)
       })
   }
 
@@ -52,6 +56,19 @@ const App = () => {
       .then(() => {
         setPersons(persons.filter(p => p.id !== person.id))
       })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          setPersons(persons.filter(p => p.id !== person.id))
+          createNotification(`Information of ${person.number} has already been removed from the server`, true)
+        }
+      })
+  }
+
+  const createNotification = (message, error = false) => {
+    setNotification({ message, error });
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000)
   }
 
   const personsToShow = nameFilter == ''
@@ -61,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter onNameFilterChange={setNameFilter} />
       <h2>add a new</h2>
       <PersonForm onPersonAdded={addPerson} />
