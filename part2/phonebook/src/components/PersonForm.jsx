@@ -23,12 +23,9 @@ const PersonForm = ({ onPersonAdded }) => {
             number: newNumber,
         }
 
-        const result = onPersonAdded(personObject)
-
-        if (result) {
-            setNewName('')
-            setNewNumber('')
-        }
+        onPersonAdded(personObject)
+        setNewName('')
+        setNewNumber('')
     }
 
     return (
