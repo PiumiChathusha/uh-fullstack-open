@@ -8,33 +8,35 @@ const testHelper = require('./test_helper');
 
 const api = supertest(app)
 
-describe('blog api', () => {
+describe('/api/blogs', () => {
 
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(testHelper.initialBlogs);
     })
 
-    test(`blogs are returned as json with ${testHelper.initialBlogs.length} initial blogs`, async () => {
-        const response = await api
-            .get('/api/blogs')
-            .expect(200)
-            .expect('Content-Type', /application\/json/)
+    describe('GET', () => {
+        test(`blogs are returned as json with ${testHelper.initialBlogs.length} initial blogs`, async () => {
+            const response = await api
+                .get('/api/blogs')
+                .expect(200)
+                .expect('Content-Type', /application\/json/)
 
-        assert.strictEqual(response.body.length, testHelper.initialBlogs.length)
+            assert.strictEqual(response.body.length, testHelper.initialBlogs.length)
+        })
+
+        test('all blogs have property id', async () => {
+            const response = await api
+                .get('/api/blogs')
+                .expect(200)
+
+            response.body.forEach(blog => {
+                assert(Object.keys(blog).includes('id'), `${JSON.stringify(blog)} does not have property id`)
+            });
+        })
     })
 
-    test('all blogs have property id', async () => {
-        const response = await api
-            .get('/api/blogs')
-            .expect(200)
-
-        response.body.forEach(blog => {
-            assert(Object.keys(blog).includes('id'), `${JSON.stringify(blog)} does not have property id`)
-        });
-    })
-
-    describe('create new blog', () => {
+    describe('POST', () => {
         test('blog added', async () => {
             const response = await api
                 .post('/api/blogs')
@@ -79,7 +81,6 @@ describe('blog api', () => {
                 .expect(400)
         })
     })
-
 
     after(async () => {
         await mongoose.connection.close()
