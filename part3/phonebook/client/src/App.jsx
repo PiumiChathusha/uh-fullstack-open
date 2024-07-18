@@ -38,6 +38,7 @@ const App = () => {
             setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
             createNotification(`Phone number changed to ${returnedPerson.number}`)
           })
+          .catch(err => createNotification(err.response.data.error, true))
         return;
       }
     }
@@ -48,6 +49,7 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         createNotification(`Added ${returnedPerson.name}`)
       })
+      .catch(err => createNotification(err.response.data.error, true))
   }
 
   const deletePerson = (person) => {
