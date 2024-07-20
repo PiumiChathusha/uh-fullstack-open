@@ -1,9 +1,11 @@
 POST http://localhost:3003/api/blogs/ HTTP/1.1
 Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBpdW1pIiwiaWQiOiI2NjliYjM0MDE0YTI0Njg1MWZlZjJhMDciLCJpYXQiOjE3MjE0ODI3NjAsImV4cCI6MTcyMTQ4NjM2MH0.oCtaCUvb7GiK_Oz1-rLKdZvD5NV6XyqRZA7UuGyHHms
 
 {
     "title": "Go To Statement Considered Harmful",
     "author": "Edsger W. Dijkstra",
     "url": "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
-    "likes" : 5
+    "likes" : 5,
+    "userId": "669bb34014a246851fef2a07"
 }
